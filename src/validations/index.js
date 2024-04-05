@@ -1,0 +1,1 @@
+exports.bookValidations = require("./book.validation")
