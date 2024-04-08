@@ -4,9 +4,9 @@ module.exports.createBook = {
     body: Joi.object().keys({
         title: Joi.string().required(),
         author: Joi.string().required(),
-        description: Joi.string(),
-        publicationYear: Joi.number(),
-        isbn: Joi.string().required(),
+        description: Joi.string().allow(null, ''),
+        publicationYear: Joi.number().integer().min(1000).max(9999).required(),
+        isbn: Joi.string().trim().length(13).pattern(/^[0-9]{13}$/).required(),
     })
 }
 
