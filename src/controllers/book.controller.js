@@ -6,11 +6,10 @@ const pick = require("../utils/pick");
 
 // this controller is to create books
 module.exports.createBook = catchAsync(async (req, res) => {
-
-    const createdBook = await bookServices.createBook(req.body, req, res)
+    const createdBook = await bookServices.createBook(req.body, req)
     res
-        .status(200)
-        .json({success:true, book:createdBook, message:"Book created successfully!"})
+        .status(201)
+        .json({success:true, data:createdBook, message:"Book created successfully!"})
 })
 
 // this controller is to get all book with pagination and search

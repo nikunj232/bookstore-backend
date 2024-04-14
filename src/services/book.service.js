@@ -1,7 +1,7 @@
 const { Book } = require("../models")
 const ApiError = require("../utils/ApiError")
 
-exports.createBook = async (reqBody, req, res) => {
+exports.createBook = async (reqBody, req) => {
     const bookExist = await Book.findOne({isbn: reqBody.isbn})
     console.log(bookExist, "existing book");
     if (!!bookExist) {
