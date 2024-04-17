@@ -16,7 +16,8 @@ const connectToDatabase = require('../testSetup');
 //     await connectToDatabase();
 // });
 
-
+let randomBookIsbn
+let randomBook
 beforeAll(async () => {
    await connectToDatabase()
 });
@@ -49,13 +50,59 @@ describe('books route', () => {
         
         const res = await request(app).get('/v1/books/all-book').send();
         console.log('New book data:', res.body);
-    
+        const allBookData = res.body.data.results
+        const allBookDataNumbers = res.body.data.totalResults
+        randomBookIsbn = allBookData[0].isbn
+
         expect(res.statusCode).toBe(200); // Check for status code
         expect(res.body).toHaveProperty('message'); // Check for response message
         expect(res.body).toHaveProperty('success'); 
         expect(res.body.success).toBe(true);
         expect(res.body).toHaveProperty('data');
         expect(res.body.message).toBe('Book data get successfully!'); // Check for response message
+
+    }, 20000);
+    
+    it('get single book by isbn', async () => {
+       
+        const res = await request(app).get(`/v1/books/${randomBookIsbn}`).send();
+        randomBook = res.body.data
+        expect(res.statusCode).toBe(200); // Check for status code
+        expect(res.body).toHaveProperty('message'); // Check for response message
+        expect(res.body).toHaveProperty('success'); 
+        expect(res.body.data).toHaveProperty('isbn'); 
+        expect(res.body.data.isbn).toBe(randomBookIsbn); 
+        expect(res.body.success).toBe(true); 
+        expect(res.body).toHaveProperty('data');
+        expect(res.body.message).toBe('Book get successfully!'); // Check for response message
+
+    }, 20000);
+    
+    it('get single book by isbn', async () => {
+       
+        const bookUpdatedData = {
+            ...randomBook,
+            title: "data updated through test cases" + Math.floor(Math.random()*10)
+        }
+        const res = await request(app).put(`/v1/books/update/${randomBookIsbn}`).send(bookUpdatedData);
+    
+        expect(res.statusCode).toBe(200); // Check for status code
+        expect(res.body).toHaveProperty('message'); // Check for response message
+        expect(res.body).toHaveProperty('success'); 
+        expect(res.body.success).toBe(true); 
+        expect(res.body.message).toBe("Book updated successfully!"); // Check for response message
+
+    }, 20000);
+    
+    it('get single book by isbn', async () => {
+       
+        const res = await request(app).delete(`/v1/books/delete/${randomBookIsbn}`).send();
+    
+        expect(res.statusCode).toBe(200); // Check for status code
+        expect(res.body).toHaveProperty('message'); // Check for response message
+        expect(res.body).toHaveProperty('success'); 
+        expect(res.body.success).toBe(true); 
+        expect(res.body.message).toBe("Book deleted successfully!"); // Check for response message
 
     }, 20000);
 });
